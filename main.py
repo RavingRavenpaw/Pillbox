@@ -1,6 +1,15 @@
 #Initialization - get current time & date
 time12hr = input("Current time: ")
 amOrPm = input("AM (1) or PM (2)? ")
+time_tuple = ( 2012, # Year 
+                   9, # Month 
+                   6, # Day 
+                   0, # Hour 
+                  38, # Minute 
+                   0, # Second 
+                   0, # Millisecond 
+               ) 
+
 
 print("Current date (format MMDDYYYY): ")
 date = input("")
