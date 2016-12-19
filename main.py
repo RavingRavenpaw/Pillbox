@@ -2,7 +2,7 @@
 correct = 0
 
 while correct == 0:
-	correct = 0
+	correct = 1
 	hour = input("Current hour: ")
 	minute = input("Current minute: ")
 	amOrPm = input("AM (1) or PM (2)? ")
@@ -17,7 +17,7 @@ while correct == 0:
 		
 	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
 	if amOrPm != 0 and amOrPm != 1:
-		continue
+		correct = 0
 	
 	#Get date
 	year = input("Year: ")
@@ -42,7 +42,7 @@ while correct == 0:
 	
 	#If anything other than 0 or 1 entered, ask again
 	while correct != 0 and correct != 1:
-		print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
+		print(months[month] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute))
 		print("Is that correct? (0 - no, 1 - yes)")
 		correct == input()
 
