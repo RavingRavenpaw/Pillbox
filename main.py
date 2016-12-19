@@ -3,45 +3,47 @@ correct = 0
 
 while correct == 0:
 	correct = 0
-	time12hr = input("Current time (HHMM): ")
+	hour = input("Current hour: ")
+	minute = input("Current minute: ")
 	amOrPm = input("AM (1) or PM (2)? ")
 	
-	#If AM, on need for conversion
-	if amOrPm == 1:
-		hour = time12hr[0:2]
-		minute = time12hr[2:4]
-		
-	#If PM, convert to 24 hour time
-	if amOrPm == 2:
-		hour = int(time12hr[0:2]) + 12
-		minute = time12hr[2:4]
+	#If AM and 12AM (so midnight), subtract 12 hours to convert to 24 hour time
+	if amOrPm == 1 and hour == 12:
+		hour == 0
+	
+	#If PM and not 12PM (so past noon),  add 12 hours to convert to 24 hour time
+	if amOrPm == 2 and hour != 12:
+		hour += 12
 		
 	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
-	else:
+	if amOrPm != 0 and amOrPm != 1:
 		continue
 	
 	#Get date
-	print("Current date (format MMDDYYYY): ")
-	date = input("")
+	year = input("Year: ")
+	month = input("Month: ")
+	day = input("Day: ")
+	
 	months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
 	
 	#Get date and time ready for time_tuple
-	year = date[4:8]
-	month = date[0:2]
-	day = date[2:4]
-	#hour already defined when setting time
-	#minute already defined when setting time
+	#
+	#year defined when getting date
+	#month defined when getting date
+	#day defined when getting date
+	#hour defined when getting time
+	#minute defined when getting time
 	#second will just use 0
 	#millisecond wil just use 0
 	
 	print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
-	print("Is that correct (0 - no, 1 - yes)?")
+	print("Is that correct? (0 - no, 1 - yes)")
 	correct == input()
 	
 	#If anything other than 0 or 1 entered, ask again
 	while correct != 0 and correct != 1:
 		print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
-		print("Is that correct (0 - no, 1 - yes)?")
+		print("Is that correct? (0 - no, 1 - yes)")
 		correct == input()
 
 #Set Linux time and date
@@ -57,6 +59,7 @@ time_tuple = ( year, # Year
 
 python set_time
 
+'''
 #Enter time of 1st alarm and ask if 2nd needed
 alarm1 = input("Time of 1st alarm: ")
 answer = input("Do you need a 2nd alarm? (yes/no)")
@@ -69,6 +72,7 @@ if answer == yes or answer == y:
 	#Enter time of 3rd alarm
 	if answer == yes or answer == y:
 		alarm3 = input("Time of 3rd alarm: ")
+'''
 
 ''' REGULAR BACKGROUND PROCESSES
 VIA THREADING, MULTIPROCESSING, OR RUNNING MULTIPLE PYTHON FILES
