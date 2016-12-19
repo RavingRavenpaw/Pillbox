@@ -36,7 +36,7 @@ while correct == 0:
 	#second will just use 0
 	#millisecond wil just use 0
 	
-	print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
+	print(months[month] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute))
 	print("Is that correct? (0 - no, 1 - yes)")
 	correct == input()
 	
