@@ -39,7 +39,7 @@ while correct == 0:
 	correct == input()
 	
 	#If anything other than 0 or 1 entered, ask again
-	while correct != 0 && correct != 1:
+	while correct != 0 and correct != 1:
 		print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
 		print("Is that correct (0 - no, 1 - yes)?")
 		correct == input()
