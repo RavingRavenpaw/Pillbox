@@ -1,14 +1,17 @@
 #Initialization - get current time
-correct = False
+correct = 0
 
-while correct == False:
-	correct = False
+while correct == 0:
+	correct = 0
 	time12hr = input("Current time (HHMM): ")
 	amOrPm = input("AM (1) or PM (2)? ")
+	
+	#If AM, on need for conversion
 	if amOrPm == 1:
 		hour = time12hr[0:2]
 		minute = time12hr[2:4]
 		
+	#If PM, convert to 24 hour time
 	if amOrPm == 2:
 		hour = int(time12hr[0:2]) + 12
 		minute = time12hr[2:4]
@@ -31,7 +34,15 @@ while correct == False:
 	#second will just use 0
 	#millisecond wil just use 0
 	
-	print(months[date[0:2]] + " " + )
+	print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
+	print("Is that correct (0 - no, 1 - yes)?")
+	correct == input()
+	
+	#If anything other than 0 or 1 entered, ask again
+	while correct != 0 && correct != 1:
+		print(months[month] + " " + day + " " + year + ", " + hour + ":" + minute)
+		print("Is that correct (0 - no, 1 - yes)?")
+		correct == input()
 
 #Set Linux time and date
 global time_tuple
