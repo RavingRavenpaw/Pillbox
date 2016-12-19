@@ -1,6 +1,10 @@
 #Initialization - get current time & date
-time = input("Current time: ")
+time12hr = input("Current time: ")
+amOrPm = input("AM (1) or PM (2)? ")
+
 print("Current date (format MMDDYYYY): ")
+date = input("")
+months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
 
 #Enter time of 1st alarm and ask if 2nd needed
 alarm1 = input("Time of 1st alarm: ")
