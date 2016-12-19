@@ -1,14 +1,7 @@
 import sys
 import datetime
 
-time_tuple = ( 2012, # Year
-                  9, # Month
-                  6, # Day
-                  0, # Hour
-                 38, # Minute
-                  0, # Second
-                  0, # Millisecond
-              )
+global time_tuple
 
 def _win_set_time(time_tuple):
     import pywin32
