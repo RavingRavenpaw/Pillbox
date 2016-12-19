@@ -1,19 +1,50 @@
-#Initialization - get current time & date
-time12hr = input("Current time: ")
-amOrPm = input("AM (1) or PM (2)? ")
-time_tuple = ( 2012, # Year 
-                   9, # Month 
-                   6, # Day 
-                   0, # Hour 
-                  38, # Minute 
+#Initialization - get current time
+correct = False
+
+while correct == False:
+	correct = False
+	time12hr = input("Current time (HHMM): ")
+	amOrPm = input("AM (1) or PM (2)? ")
+	if amOrPm == 1:
+		hour = time12hr[0:2]
+		minute = time12hr[2:4]
+		
+	if amOrPm == 2:
+		hour = int(time12hr[0:2]) + 12
+		minute = time12hr[2:4]
+		
+	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
+	else:
+		continue
+	
+	#Get date
+	print("Current date (format MMDDYYYY): ")
+	date = input("")
+	months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
+	
+	#Get date and time ready for time_tuple
+	year = date[4:8]
+	month = date[0:2]
+	day = date[2:4]
+	#hour already defined when setting time
+	#minute already defined when setting time
+	#second will just use 0
+	#millisecond wil just use 0
+	
+	print(months[date[0:2]] + " " + )
+
+#Set Linux time and date
+global time_tuple
+time_tuple = ( year, # Year 
+               month, # Month 
+                 day, # Day 
+                hour, # Hour 
+              minute, # Minute 
                    0, # Second 
                    0, # Millisecond 
                ) 
 
-
-print("Current date (format MMDDYYYY): ")
-date = input("")
-months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
+python set_time
 
 #Enter time of 1st alarm and ask if 2nd needed
 alarm1 = input("Time of 1st alarm: ")
