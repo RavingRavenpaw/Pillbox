@@ -1,11 +1,10 @@
 #Initialization - get current time
-correct = 0
-
-while correct == 0:
-	correct = 1
-	hour = input("Current hour: ")
-	minute = input("Current minute: ")
-	amOrPm = input("AM (1) or PM (2)? ")
+while (1==1):
+	hour = int(input("Current hour: "))
+	minute = int(input("Current minute: "))
+	amOrPm = int(input("AM (1) or PM (2)? "))
+	
+	amPmVar = ""
 	
 	#If AM and 12AM (so midnight), subtract 12 hours to convert to 24 hour time
 	if amOrPm == 1 and hour == 12:
@@ -16,8 +15,15 @@ while correct == 0:
 		hour += 12
 		
 	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
-	if amOrPm != 0 and amOrPm != 1:
-		correct = 0
+	if amOrPm != 1 and amOrPm != 2:
+		continue
+		
+	#Set variable for AM or PM
+	if amOrPm == 1:
+		amPmVar = "AM"
+
+	if amOrPm == 2:
+		amPmVar = "PM"
 	
 	#Get date
 	year = input("Year: ")
@@ -36,28 +42,28 @@ while correct == 0:
 	#second will just use 0
 	#millisecond wil just use 0
 	
-	print(months[month] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute))
+	#Ask if that is correct, and if not, ask repeat time & date setting
+	correct = 0
+	print(months[int(month) - 1] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute) + amPmVar)
 	print("Is that correct? (0 - no, 1 - yes)")
-	correct == input()
-	
-	#If anything other than 0 or 1 entered, ask again
-	while correct != 0 and correct != 1:
-		print(months[month] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute))
-		print("Is that correct? (0 - no, 1 - yes)")
-		correct == input()
+	correct = int(input())
+	if correct == 1:
+		break
+	else:
+		continue
 
 #Set Linux time and date
 global time_tuple
 time_tuple = ( year, # Year 
-               month, # Month 
-                 day, # Day 
-                hour, # Hour 
-              minute, # Minute 
-                   0, # Second 
-                   0, # Millisecond 
-               ) 
+							month, # Month 
+							  day, # Day 
+							 hour, # Hour 
+						 minute, # Minute 
+									0, # Second 
+									0, # Millisecond 
+							) 
 
-python set_time
+#python set_time
 
 '''
 #Enter time of 1st alarm and ask if 2nd needed
@@ -99,3 +105,4 @@ if it is alarm time
         3. Stop music
 Go back to background process
 ''' 
+
