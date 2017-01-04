@@ -1,8 +1,42 @@
+hour = 0
+amOrPm = 0
+def twelveHeto24Hr(hour, amOrPm):
+
+
+	#If AM and 12AM (so midnight), subtract 12 hours to convert to 24 hour time
+	if amOrPm == 1 and hour == 12:
+		return(0)
+	
+	#If PM and not 12PM (so past noon),  add 12 hours to convert to 24 hour time
+	if amOrPm == 2 and hour != 12:
+		return(hour + 12)
+		
+	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
+	if amOrPm != 1 and amOrPm != 2:
+		print("Error: AM (1) or PM (2) not entered")
+	
+
 #Initialization - get current time
 while (1==1):
-	hour = int(input("Current hour: "))
-	minute = int(input("Current minute: "))
-	amOrPm = int(input("AM (1) or PM (2)? "))
+	hour = -1
+	minute = -1
+	amOrPm = -1
+	
+	while hour < 1 or hour > 12:
+		hour = int(input("Current hour: "))
+		
+		if hour < 1 or hour > 12:
+			print("Please enter an hour from 1 to 12.")
+			
+	while minute < 0 or minute > 59:
+		minute = int(input("Current minute: "))
+		
+		if minute < 0 or minute > 59:
+			print("Please enter a minute from 0 to 59")
+			
+	while amOrPm != 1 and amOrPm != 2:
+		amOrPm = int(input("AM (1) or PM (2)? "))
+		
 	
 	amPmVar = ""
 	
@@ -25,12 +59,30 @@ while (1==1):
 	if amOrPm == 2:
 		amPmVar = "PM"
 	
-	#Get date
-	year = input("Year: ")
-	month = input("Month: ")
-	day = input("Day: ")
-	
 	months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
+	year = 0
+	month = 0
+	day = 0
+	
+	#Get date (with basic error handling!)
+	while len(str(year)) != 4:
+		year = input("Year: ")
+		
+		if len(year) != 4:
+			print("Please enter a valid year.")
+	
+	while int(month) < 1 or int(month) > 12:
+		month = input("Month: ")
+		
+		if int(month) < 1 or int(month) > 12:
+			print("Please enter the number of a valid month (1 to 12).")
+
+	while int(day) < 1 or int(day) > 31:
+		day = input("Day: ")
+		
+		if int(day) < 1 or int(day) > 31:
+			print("Please enter a valid day (1 - 31).")
+	
 	
 	#Get date and time ready for time_tuple
 	#
@@ -64,6 +116,8 @@ time_tuple = ( year, # Year
 							) 
 
 #python set_time
+
+alarm = int(input("Alarm time: "))
 
 '''
 #Enter time of 1st alarm and ask if 2nd needed
