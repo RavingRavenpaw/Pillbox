@@ -1,21 +1,54 @@
+#Define some variables that will be used across functions
 hour = 0
 amOrPm = 0
-def twelveHeto24Hr(hour, amOrPm):
+amPmVar = ""
+months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
+year = 0
+month = 0
+day = 0
+alarmHour = 0
+alarmMinute = -1
+alarmAmOrPm = -1
 
-
-	#If AM and 12AM (so midnight), subtract 12 hours to convert to 24 hour time
+#Function to convert from 12hr time to 24hr time
+def to24Hr(hour, amOrPm):
+	if amOrPm == 1:
+		amPmVar = "AM"
+		
+	if amOrPm == 2:
+		amPmVar = "PM"
+		
+	#If 12AM (midnight), return 0 (12hr time starts at 12am, 24hr starts at 0)
 	if amOrPm == 1 and hour == 12:
 		return(0)
+		
+	#If AM and not 12 (so past midnight), return the existing hour
+	if amOrPm ==1 and hour != 12:
+		return(hour)
+	
+	#If 12PM (noon), just return 12
+	if amOrPm == 2 and hour == 12:
+		return(hour)
 	
 	#If PM and not 12PM (so past noon),  add 12 hours to convert to 24 hour time
 	if amOrPm == 2 and hour != 12:
 		return(hour + 12)
-		
-	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
-	if amOrPm != 1 and amOrPm != 2:
-		print("Error: AM (1) or PM (2) not entered")
-	
 
+
+def to12Hr(hour, minute):
+	if hour == 0:
+		return("" + "12" + ":" + minute + " AM")
+	
+	if hour > 0 and hour < 12:
+		return("" + hour + ":" + minute + " AM")
+		
+	if hour == 12:
+		return("" + "12" + ":" + minute + " PM")
+		
+	if hour > 12:
+		return("" + (hour - 12) + ":" + minute + " PM")
+	
+	
 #Initialization - get current time
 while (1==1):
 	hour = -1
@@ -36,33 +69,12 @@ while (1==1):
 			
 	while amOrPm != 1 and amOrPm != 2:
 		amOrPm = int(input("AM (1) or PM (2)? "))
-		
-	
-	amPmVar = ""
-	
-	#If AM and 12AM (so midnight), subtract 12 hours to convert to 24 hour time
-	if amOrPm == 1 and hour == 12:
-		hour == 0
-	
-	#If PM and not 12PM (so past noon),  add 12 hours to convert to 24 hour time
-	if amOrPm == 2 and hour != 12:
-		hour += 12
-		
-	#If user does not enter 1 (AM) or 2 (PM), return to start of loop
-	if amOrPm != 1 and amOrPm != 2:
-		continue
-		
-	#Set variable for AM or PM
-	if amOrPm == 1:
-		amPmVar = "AM"
+		print("")
 
-	if amOrPm == 2:
-		amPmVar = "PM"
 	
-	months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
-	year = 0
-	month = 0
-	day = 0
+	#CONVERT TO 24 HR
+	hour = to24Hr(hour, amOrPm)
+	
 	
 	#Get date (with basic error handling!)
 	while len(str(year)) != 4:
@@ -82,6 +94,7 @@ while (1==1):
 		
 		if int(day) < 1 or int(day) > 31:
 			print("Please enter a valid day (1 - 31).")
+		print("")
 	
 	
 	#Get date and time ready for time_tuple
@@ -104,6 +117,7 @@ while (1==1):
 	else:
 		continue
 
+
 #Set Linux time and date
 global time_tuple
 time_tuple = ( year, # Year 
@@ -115,24 +129,38 @@ time_tuple = ( year, # Year
 									0, # Millisecond 
 							) 
 
+
 #python set_time
 
-alarm = int(input("Alarm time: "))
 
-'''
-#Enter time of 1st alarm and ask if 2nd needed
-alarm1 = input("Time of 1st alarm: ")
-answer = input("Do you need a 2nd alarm? (yes/no)")
 
-#Enter time of 2nd alarm if needed and ask for 3rd
-if answer == yes or answer == y:
-	alarm2 = input("Time of 2nd alarm: ")
-	answer = input("Do you need a 3rd alarm? (yes/no)")
-	
-	#Enter time of 3rd alarm
-	if answer == yes or answer == y:
-		alarm3 = input("Time of 3rd alarm: ")
-'''
+
+#Set the alarm time
+while (1==1):
+	while alarmHour < 1 or alarmHour > 12:
+		alarmHour = int(input("Alarm hour: "))
+		
+		if alarmHour < 1 or alarmHour > 12:
+			print("Please enter an hour from 1 to 12.")
+		
+	while alarmMinute < 0 or alarmMinute > 59:
+		alarmMinute = int(input("Alarm minute: "))
+		
+		if alarmMinute < 0 or alarmMinute > 59:
+			print("Please enter a minute from 0 - 59.")
+			
+	while alarmAmOrPm != 1 and alarmAmOrPm != 2:
+		alarmAmOrPm = int(input("AM (1) or PM (2)? "))
+		print("")
+			
+		correct = 0
+		print("" + str(to24Hr(alarmHour, alarmAmOrPm)) + ":" + str(alarmMinute) + " " + amPmVar)
+		print("Is that correct? (0 - no, 1 - yes)")
+		correct = int(input())
+		if correct == 1:
+			break
+		else:
+			continue
 
 ''' REGULAR BACKGROUND PROCESSES
 VIA THREADING, MULTIPROCESSING, OR RUNNING MULTIPLE PYTHON FILES
@@ -159,4 +187,3 @@ if it is alarm time
         3. Stop music
 Go back to background process
 ''' 
-
