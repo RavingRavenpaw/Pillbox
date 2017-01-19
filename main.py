@@ -1,8 +1,37 @@
+import RPi.GPIO as GPIO
+import Adafruit_CharLCD as LCD
+import time
+
+# Raspberry Pi pin configuration for LCD:
+lcd_rs        = 27  # Note this might need to be changed to 21 for older revision Pi's.
+lcd_en        = 22
+lcd_d4        = 25
+lcd_d5        = 24
+lcd_d6        = 23
+lcd_d7        = 18
+lcd_backlight = 4
+
+
+# Define LCD column and row size for 16x2 LCD.
+lcd_columns = 16
+lcd_rows    = 2
+
+# Initialize the LCD using the pins above.
+lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
+
+                           lcd_columns, lcd_rows, lcd_backlight)
+
+
+
+#Display loading message
+print("Loading...")
+lcd.message("Loading...")
+
 #Define some variables that will be used across functions
 hour = 0
 amOrPm = 0
 amPmVar = ""
-months = ["January", "February", "March", "April", "May", "June" "July", "August", "September", "October", "November", "December"]
+months = ["Jan", "Feb", "Mar", "Apr", "May", "June" "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
 year = 0
 month = 0
 day = 0
@@ -49,25 +78,39 @@ def to12Hr(hour, minute):
 		return("" + (hour - 12) + ":" + minute + " PM")
 	
 	
+	
+	
+	
 #Initialization - get current time
+lcd.show_cursor(True)
 while (1==1):
 	hour = -1
 	minute = -1
 	amOrPm = -1
 	
 	while hour < 1 or hour > 12:
+		lcd.clear()
+		lcd.message("Current hour: ")
 		hour = int(input("Current hour: "))
 		
 		if hour < 1 or hour > 12:
+			lcd.clear()
+			lcd.message("Enter hour from\n1 to 12: ")
 			print("Please enter an hour from 1 to 12.")
 			
 	while minute < 0 or minute > 59:
+		lcd.clear()
+		lcd.message("Current minute: ")
 		minute = int(input("Current minute: "))
 		
 		if minute < 0 or minute > 59:
+			lcd.clear()
+			lcd.message("Enter minute \nfrom 0 to 59: ")
 			print("Please enter a minute from 0 to 59")
 			
 	while amOrPm != 1 and amOrPm != 2:
+		lcd.clear()
+		lcd.message("AM(1) or PM(2)?\n")
 		amOrPm = int(input("AM (1) or PM (2)? "))
 		print("")
 
@@ -78,21 +121,33 @@ while (1==1):
 	
 	#Get date (with basic error handling!)
 	while len(str(year)) != 4:
+		lcd.clear()
+		lcd.message("Year:")
 		year = input("Year: ")
 		
 		if len(year) != 4:
+			lcd.clear()
+			lcd.message("Enter a valid\nyear: ")
 			print("Please enter a valid year.")
 	
 	while int(month) < 1 or int(month) > 12:
-		month = input("Month: ")
+		lcd.clear()
+		lcd.message("Month (as\nnumber): ")
+		month = input("Month (as number): ")
 		
 		if int(month) < 1 or int(month) > 12:
+			lcd.clear()
+			lcd.message("Enter valid\nmonth (1-12): ")
 			print("Please enter the number of a valid month (1 to 12).")
 
 	while int(day) < 1 or int(day) > 31:
+		lcd.clear()
+		lcd.message("Day: ")
 		day = input("Day: ")
 		
 		if int(day) < 1 or int(day) > 31:
+			lcd.clear()
+			lcd.message("Enter valid day\n(1 - 31): ")
 			print("Please enter a valid day (1 - 31).")
 		print("")
 	
@@ -108,9 +163,15 @@ while (1==1):
 	#millisecond wil just use 0
 	
 	#Ask if that is correct, and if not, ask repeat time & date setting
+	lcd.clear()
 	correct = 0
 	print(months[int(month) - 1] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute) + amPmVar)
+	
+	lcd.message(months[int(month) - 1] + " " + str(day) + " " + str(year) + "\n" + str(hour) + ":" + str(minute) + amPmVar)
+	time.sleep(3.5)
 	print("Is that correct? (0 - no, 1 - yes)")
+	lcd.clear()
+	lcd.message("Is that correct?\n(0 no, 1 yes) ")
 	correct = int(input())
 	if correct == 1:
 		break
@@ -162,6 +223,9 @@ while (1==1):
 		else:
 			continue
 
+while 1==1:
+	if alarmHour == datetime.datetime.time(datetime.datetime.now()[1])
+	
 ''' REGULAR BACKGROUND PROCESSES
 VIA THREADING, MULTIPROCESSING, OR RUNNING MULTIPLE PYTHON FILES
 
