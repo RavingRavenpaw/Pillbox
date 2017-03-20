@@ -54,6 +54,9 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 if sys.platform == "win32": #Windows
     lcd = LCD.Adafruit_CharLCD()
 
+#Turn on LCD backlight
+lcd.set_backlight(1)
+
 #Define some variables that will be used across functions
 hour = 0
 amOrPm = 0
