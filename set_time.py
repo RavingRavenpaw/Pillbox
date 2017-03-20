@@ -42,8 +42,8 @@ def _linux_set_time(time_tuple):
     librt.clock_settime(CLOCK_REALTIME, ctypes.byref(ts))
 
 
-if sys.platform=='linux2':
+if sys.platform=='linux2' or sys.platform == "linux":
     _linux_set_time(time_tuple)
 
-elif  sys.platform=='win32':
-    _win_set_time(time_tuple)
+else:
+    print("set_time.py executed correctly but did not set time.")

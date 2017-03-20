@@ -1,3 +1,6 @@
+#Display loading message
+print("Loading...")
+
 import sys
 if sys.platform == "win32": #Windows
     #Just do nothing when LCD functions are called
@@ -7,6 +10,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
     import RPi.GPIO as GPIO
     import Adafruit_CharLCD as LCD
 import time
+import datetime
 
 
 
@@ -48,10 +52,6 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 if sys.platform == "win32": #Windows
     lcd = LCD.Adafruit_CharLCD()
 
-
-#Display loading message
-piPrint("Loading...")
-
 #Define some variables that will be used across functions
 hour = 0
 amOrPm = 0
@@ -84,18 +84,21 @@ def to24Hr(hour, amOrPm):
     	return(hour + 12)
 
 
-def to12Hr(hour, minute):
-    if hour == 0:
-        return("" + "12" + ":" + minute + " AM")
+def to12HrDisplay(hour24, minute):
+    if minute < 10:
+        minute = "0" + str(minute)
 
-    if hour > 0 and hour < 12:
-    	return("" + hour + ":" + minute + " AM")
+    if hour24 == 0:
+        return("" + "12" + ":" + str(minute) + " AM")
 
-    if hour == 12:
-    	return("" + "12" + ":" + minute + " PM")
+    if hour24 > 0 and hour24 < 12:
+    	return("" + str(hour24) + ":" + minute + " AM")
 
-    if hour > 12:
-        return("" + (hour - 12) + ":" + minute + " PM")
+    if hour24 == 12:
+    	return("" + "12" + ":" + str(minute) + " PM")
+
+    if hour24 > 12:
+        return("" + str((hour24 - 12)) + ":" + str(minute) + " PM")
 
 
 
@@ -182,7 +185,7 @@ while (1==1):
     #Ask if that is correct, and if not, ask repeat time & date setting
     lcd.clear()
     correct = 0
-    piPrint(months[int(month) - 1] + " " + str(day) + " " + str(year) + ", " + str(hour) + ":" + str(minute) + amPmVar)
+    piPrint(months[int(month) - 1] + " " + str(day) + " " + str(year) + ", " + to12HrDisplay(hour, minute))
     time.sleep(3.5)
     lcd.clear()
     piPrint("Is that correct?\n(0 no, 1 yes) ")
@@ -219,7 +222,8 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 
 
 #Set the alarm time
-while (1==1):
+correct = 0
+while correct == 0:
     while alarmHour < 1 or alarmHour > 12:
         alarmHour = int(input("Alarm hour: "))
 
@@ -236,8 +240,9 @@ while (1==1):
         alarmAmOrPm = int(input("AM (1) or PM (2)? "))
         print("")
 
-        correct = 0
-        print("" + str(to24Hr(alarmHour, alarmAmOrPm)) + ":" + str(alarmMinute) + " " + amPmVar)
+        alarmHour = to24Hr(alarmHour, alarmAmOrPm)
+
+        print("" + str(to12HrDisplay(alarmHour, alarmMinute)))
         print("Is that correct? (0 - no, 1 - yes)")
         correct = int(input())
         if correct == 1:
@@ -246,9 +251,13 @@ while (1==1):
             continue
 
 while 1==1:
-    if alarmHour == datetime.datetime.time(datetime.datetime.now()[1]):
-        pass
-        piPrint("Success!")
+    now = datetime.datetime.now()
+    if alarmHour == now.hour and alarmMinute == now.minute:
+        piPrint("Alarm!")
+        time.sleep(2)
+    else:
+        piPrint("Waiting for alarm...")
+        time.sleep(2)
 
 ''' REGULAR BACKGROUND PROCESSES
 VIA THREADING, MULTIPROCESSING, OR RUNNING MULTIPLE PYTHON FILES
