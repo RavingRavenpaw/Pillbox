@@ -12,6 +12,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
     import Adafruit_CharLCD as LCD
 import time
 import datetime
+import pygame
 
 
 
@@ -279,6 +280,13 @@ while 1==1:
     now = datetime.datetime.now()
     #If actual time and alarm time match, trigger alarm
     if alarmHour == now.hour and alarmMinute == now.minute:
+        #Play audio
+        pygame.mixer.init()
+        pygame.mixer.music.load("alarm.wav")
+        pygame.mixer.music.play()
+
+    while alarmHour == now.hour and alarmMinute == now.minute:
+        #Print alarm and flash display
         piPrint("Alarm!")
         lcd.set_backlight(0)
         time.sleep(1)
