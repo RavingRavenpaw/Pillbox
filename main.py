@@ -12,6 +12,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
     import Adafruit_CharLCD as LCD
 import time
 import datetime
+#import pygame
 
 
 
@@ -53,6 +54,9 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 # Initialize dummy LCD if on Windows.
 if sys.platform == "win32": #Windows
     lcd = LCD.Adafruit_CharLCD()
+
+#Turn on LCD backlight
+lcd.set_backlight(1)
 
 #Define some variables that will be used across functions
 hour = 0
@@ -160,7 +164,7 @@ while (1==1):
         lcd.message("Year:")
         year = input("Year: ")
 
-        if len(year) != 4:
+        if len(str(year)) != 4:
             lcd.clear()
             piPrint("Enter a valid\nyear: ")
 
@@ -199,7 +203,7 @@ while (1==1):
     #Ask if that is correct, and if not, ask repeat time & date setting
     lcd.clear()
     correct = 0
-    piPrint(months[int(month) - 1] + " " + str(day) + " " + str(year) + ", " + to12HrDisplay(hour, minute))
+    piPrint(months[int(month) - 1] + " " + str(day) + " " + str(year) + "\n" + to12HrDisplay(hour, minute))
     time.sleep(3.5)
     lcd.clear()
     piPrint("Is that correct?\n(0 no, 1 yes) ")
@@ -239,22 +243,27 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 correct = 0
 while correct == 0:
     while alarmHour < 1 or alarmHour > 12:
+        lcd.clear()
         lcd.message("Alarm hour: ")
         alarmHour = int(input("Alarm hour: "))
 
         if alarmHour < 1 or alarmHour > 12:
+            lcd.clear()
             lcd.message("Enter hour from\n 1 to 12.")
             print("Please enter an hour from 1 to 12.")
 
     while alarmMinute < 0 or alarmMinute > 59:
+        lcd.clear()
         lcd.message("Alarm minute: ")
         alarmMinute = int(input("Alarm minute: "))
 
         if alarmMinute < 0 or alarmMinute > 59:
+            lcd.clear()
             lcd.message("Enter min from\n0 - 59.")
             print("Please enter a minute from 0 - 59.")
 
     while alarmAmOrPm != 1 and alarmAmOrPm != 2:
+        lcd.clear()
         lcd.message("AM (1) or PM (2)? ")
         alarmAmOrPm = int(input("AM (1) or PM (2)? "))
         print("")
@@ -263,8 +272,10 @@ while correct == 0:
         alarmHour = to24Hr(alarmHour, alarmAmOrPm)
 
         #Confirm date and time are correct
+        lcd.clear()
         piPrint("" + str(to12HrDisplay(alarmHour, alarmMinute)))
-        piPrint("Is that correct?\n(0 - no, 1 - yes) ")
+        lcd.clear()
+        piPrint("Is that correct?\n(0 no, 1 yes) ")
         correct = int(input())
         if correct == 1:
             break
@@ -276,6 +287,15 @@ while 1==1:
     now = datetime.datetime.now()
     #If actual time and alarm time match, trigger alarm
     if alarmHour == now.hour and alarmMinute == now.minute:
+        #Play audio
+        '''
+        pygame.mixer.init()
+        pygame.mixer.music.load("alarm.wav")
+        pygame.mixer.music.play()
+        '''
+
+    while alarmHour == now.hour and alarmMinute == now.minute:
+        #Print alarm and flash display
         piPrint("Alarm!")
         lcd.set_backlight(0)
         time.sleep(1)
