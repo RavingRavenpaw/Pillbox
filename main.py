@@ -1,3 +1,20 @@
+'''Quick note:
+To any nerds reading this, the reason why I'm checking if the system platform is
+linux before doing a command so often, it's because I'm developing & debugging
+on Win10, but the program is actually meant to run on a Raspberry Pi, which
+obviously runs linux.
+
+I don't want certain things to be run on Windows (ex.
+setting the time or trying to import modules that don't exist on windows,
+such as RPi.GPIO), so that's why. I think I could clear up some of this with
+'try except' or whatever, but eh, that's for another day.
+
+If you're actually trying to modify this on a linux machine, sorry about that!
+'''
+
+
+
+
 #Display loading message
 print("Loading...")
 
@@ -221,21 +238,18 @@ while (1==1):
 if sys.platform == "linux" or sys.platform == "linux2": #Linux
     global time_tuple
     time_tuple = ( year, # Year
-                    month, # Month
+                  month, # Month
                     day, # Day
-                    hour, # Hour
+                   hour, # Hour
     		     minute, # Minute
-    		        0, # Second
-    			0, # Millisecond
-                            )
+    		          0, # Second
+    			      0, # Millisecond
+                      )
 
 
-#python3 set_time
-#THat doesn't work yet. I don't know why.
-#I still need to figure out how to execute other python files.
-#
-#exec(open("/set_time.py").read())
-#^that might work. I'll test later.
+#Set time if on Pi...
+if sys.platform == "linux" or sys.platform == "linux2":
+    os.system("python set_time.py")
 
 
 
@@ -293,6 +307,7 @@ while 1==1:
         pygame.mixer.music.load("alarm.wav")
         pygame.mixer.music.play()
         '''
+        pass
 
     while alarmHour == now.hour and alarmMinute == now.minute:
         #Print alarm and flash display
