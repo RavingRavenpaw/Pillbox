@@ -311,6 +311,7 @@ while 1==1:
 
     while alarmHour == now.hour and alarmMinute == now.minute:
         #Print alarm and flash display
+        lcd.clear()
         piPrint("Alarm!")
         lcd.set_backlight(0)
         time.sleep(1)
@@ -320,7 +321,10 @@ while 1==1:
 
     #Just print that we're still waiting for the alarm time...
     else:
-        piPrint("Waiting for alarm...")
+        lcd.clear()
+        piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
+        + months[now.month - 1] + " " + now.day + ", " + now.year)
+        print("Waiting for alarm...")
         time.sleep(3)
 
         '''if sys.platform == "win32": #Clear screen on Windows
