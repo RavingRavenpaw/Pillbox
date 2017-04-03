@@ -49,7 +49,10 @@ def piPrint(text):
         print(text)
         lcd.message(text)
 
-
+def GPIO_callback(channel):
+	#Code for checking if right switch pressed/depressed
+	pass
+	
 # Raspberry Pi pin configuration for LCD:
 lcd_rs        = 27  # Note this might need to be changed to 21 for older revision Pi's.
 lcd_en        = 22
@@ -86,6 +89,16 @@ day = 0
 alarmHour = 0
 alarmMinute = -1
 alarmAmOrPm = -1
+
+#Set GPIO mode and initialize pins
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Monday, 0
+GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Tuesday, 1
+GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 2
+GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Thursday, 3
+GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Friday, 4
+GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #SAturday, 5
+GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 6
 
 #Function to convert from 12hr time to 24hr time
 def to24Hr(hour, amOrPm):
@@ -301,17 +314,13 @@ while 1==1:
     now = datetime.datetime.now()
     #If actual time and alarm time match, trigger alarm
     if alarmHour == now.hour and alarmMinute == now.minute:
-        #Play audio
-        '''
-        pygame.mixer.init()
-        pygame.mixer.music.load("alarm.wav")
-        pygame.mixer.music.play()
-        '''
-        pass
+        #Play audio using aplay
+        os.system("aplay /home/Pillbox/alarm.ogg")
 
     while alarmHour == now.hour and alarmMinute == now.minute:
         #Print alarm and flash display
         lcd.clear()
+	GPIO.add_event_detect(36, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Just using Monday switch for now
         piPrint("Alarm!")
         lcd.set_backlight(0)
         time.sleep(1)
