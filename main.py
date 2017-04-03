@@ -114,15 +114,16 @@ alarmHour = 0
 alarmMinute = -1
 alarmAmOrPm = -1
 
-#Set GPIO mode and initialize pins
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Monday, 0
-GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Tuesday, 1
-GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 2
-GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Thursday, 3
-GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Friday, 4
-GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #SAturday, 5
-GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 6
+#Set GPIO mode and initialize pins when on Pi
+if sys.platform == "linux" or sys.platform == "linux2":
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Monday, 0
+    GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Tuesday, 1
+    GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 2
+    GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Thursday, 3
+    GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Friday, 4
+    GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #SAturday, 5
+    GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 6
 
 #Function to convert from 12hr time to 24hr time
 def to24Hr(hour, amOrPm):
@@ -340,14 +341,15 @@ while 1==1:
         #Play audio using aplay
         os.system("aplay /home/Pillbox/alarm.ogg")
 
-	#Listen for GPIO pins fall (so listen for switches being let up)
-	GPIO.add_event_detect(36, GPIO.FALLING, callback=mondaySwitchPressed, bouncetime=300) #Monday
-	GPIO.add_event_detect(38, GPIO.FALLING, callback=tuesdaySwitchPressed, bouncetime=300) #Tuesday
-	GPIO.add_event_detect(40, GPIO.FALLING, callback=wednsdaySwitchPressed, bouncetime=300) #Wednsday
-	GPIO.add_event_detect(31, GPIO.FALLING, callback=thursdaySwitchPressed, bouncetime=300) #Thursday
-	GPIO.add_event_detect(33, GPIO.FALLING, callback=fridaySwitchPressed, bouncetime=300) #Friday
-	GPIO.add_event_detect(35, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Saturday
-	GPIO.add_event_detect(37, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Sunday
+	#Listen for GPIO pins fall (so listen for switches being let up) if on Pi
+    if sys.platform == "linux" or sys.platform == "linux2":
+    	GPIO.add_event_detect(36, GPIO.FALLING, callback=mondaySwitchPressed, bouncetime=300) #Monday
+    	GPIO.add_event_detect(38, GPIO.FALLING, callback=tuesdaySwitchPressed, bouncetime=300) #Tuesday
+    	GPIO.add_event_detect(40, GPIO.FALLING, callback=wednsdaySwitchPressed, bouncetime=300) #Wednsday
+    	GPIO.add_event_detect(31, GPIO.FALLING, callback=thursdaySwitchPressed, bouncetime=300) #Thursday
+    	GPIO.add_event_detect(33, GPIO.FALLING, callback=fridaySwitchPressed, bouncetime=300) #Friday
+    	GPIO.add_event_detect(35, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Saturday
+    	GPIO.add_event_detect(37, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Sunday
 
     while alarmHour == now.hour and alarmMinute == now.minute:
         #Print alarm and flash display
