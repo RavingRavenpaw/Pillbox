@@ -49,7 +49,31 @@ def piPrint(text):
         print(text)
         lcd.message(text)
 
-def GPIO_callback(channel):
+def mondaySwitchPressed(channel): #BCM 36
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def tuesdaySwitchPressed(channel): #BCM 38
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def wednsdaySwitchPressed(channel): #BCM 40
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def thursdaySwitchPressed(channel): #BCM 31
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def fridaySwitchPressed(channel): #BCM 33
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def saturdaySwitchPressed(channel): #BCM 35
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def sundaySwitchPressed(channel): #BCM 37
 	#Code for checking if right switch pressed/depressed
 	pass
 	
@@ -316,11 +340,19 @@ while 1==1:
     if alarmHour == now.hour and alarmMinute == now.minute:
         #Play audio using aplay
         os.system("aplay /home/Pillbox/alarm.ogg")
+	
+	#Listen for GPIO pins fall (so listen for switches being let up)
+	GPIO.add_event_detect(36, GPIO.FALLING, callback=mondaySwitchPressed, bouncetime=300) #Monday
+	GPIO.add_event_detect(38, GPIO.FALLING, callback=tuesdaySwitchPressed, bouncetime=300) #Tuesday
+	GPIO.add_event_detect(40, GPIO.FALLING, callback=wednsdaySwitchPressed, bouncetime=300) #Wednsday
+	GPIO.add_event_detect(31, GPIO.FALLING, callback=thursdaySwitchPressed, bouncetime=300) #Thursday
+	GPIO.add_event_detect(33, GPIO.FALLING, callback=fridaySwitchPressed, bouncetime=300) #Friday
+	GPIO.add_event_detect(35, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Saturday
+	GPIO.add_event_detect(37, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Sunday
 
     while alarmHour == now.hour and alarmMinute == now.minute:
         #Print alarm and flash display
         lcd.clear()
-	GPIO.add_event_detect(36, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Just using Monday switch for now
         piPrint("Alarm!")
         lcd.set_backlight(0)
         time.sleep(1)
