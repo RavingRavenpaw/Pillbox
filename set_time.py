@@ -1,8 +1,6 @@
 import sys
 import datetime
 
-global time_tuple
-
 def _win_set_time(time_tuple):
     import pywin32
     # http://timgolden.me.uk/pywin32-docs/win32api__SetSystemTime_meth.html

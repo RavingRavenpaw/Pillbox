@@ -29,8 +29,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
     import Adafruit_CharLCD as LCD
 import time
 import datetime
-#import pygame
-
+import set_time
 
 
 def piPrint(text):
@@ -76,7 +75,7 @@ def saturdaySwitchPressed(channel): #BCM 35
 def sundaySwitchPressed(channel): #BCM 37
 	#Code for checking if right switch pressed/depressed
 	pass
-	
+
 # Raspberry Pi pin configuration for LCD:
 lcd_rs        = 27  # Note this might need to be changed to 21 for older revision Pi's.
 lcd_en        = 22
@@ -107,6 +106,7 @@ hour = 0
 amOrPm = 0
 amPmVar = ""
 months = ["Jan", "Feb", "Mar", "Apr", "May", "June" "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+days = ["Mon", "Tues", "Wedns", "Thurs", "Fri", "Sat", "Sun"]
 year = 0
 month = 0
 day = 0
@@ -273,7 +273,6 @@ while (1==1):
 
 #Set Linux time and date
 if sys.platform == "linux" or sys.platform == "linux2": #Linux
-    global time_tuple
     time_tuple = ( year, # Year
                   month, # Month
                     day, # Day
@@ -286,7 +285,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 
 #Set time if on Pi...
 if sys.platform == "linux" or sys.platform == "linux2":
-    os.system("python set_time.py")
+    set_time._linux_set_time(time_tuple)
 
 
 
@@ -340,7 +339,7 @@ while 1==1:
     if alarmHour == now.hour and alarmMinute == now.minute:
         #Play audio using aplay
         os.system("aplay /home/Pillbox/alarm.ogg")
-	
+
 	#Listen for GPIO pins fall (so listen for switches being let up)
 	GPIO.add_event_detect(36, GPIO.FALLING, callback=mondaySwitchPressed, bouncetime=300) #Monday
 	GPIO.add_event_detect(38, GPIO.FALLING, callback=tuesdaySwitchPressed, bouncetime=300) #Tuesday
@@ -364,7 +363,7 @@ while 1==1:
     else:
         lcd.clear()
         piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
-        + months[now.month - 1] + " " + now.day + ", " + now.year)
+        + days[datetime.datetime.today().weekday()] + months[now.month - 1] + " " + now.day + ", " + now.year)
         print("Waiting for alarm...")
         time.sleep(3)
 
