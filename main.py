@@ -18,6 +18,7 @@ If you're actually trying to modify this on a linux machine, sorry about that!
 #Display loading message
 print("Loading...")
 
+import os
 import sys
 if sys.platform == "win32": #Windows
     #Just do nothing when LCD functions are called
@@ -29,8 +30,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
     import Adafruit_CharLCD as LCD
 import time
 import datetime
-#import pygame
-
+import set_time
 
 
 def piPrint(text):
@@ -49,6 +49,33 @@ def piPrint(text):
         print(text)
         lcd.message(text)
 
+def mondaySwitchPressed(channel): #BCM 36
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def tuesdaySwitchPressed(channel): #BCM 38
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def wednsdaySwitchPressed(channel): #BCM 40
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def thursdaySwitchPressed(channel): #BCM 31
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def fridaySwitchPressed(channel): #BCM 33
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def saturdaySwitchPressed(channel): #BCM 35
+	#Code for checking if right switch pressed/depressed
+	pass
+
+def sundaySwitchPressed(channel): #BCM 37
+	#Code for checking if right switch pressed/depressed
+	pass
 
 # Raspberry Pi pin configuration for LCD:
 lcd_rs        = 27  # Note this might need to be changed to 21 for older revision Pi's.
@@ -80,12 +107,24 @@ hour = 0
 amOrPm = 0
 amPmVar = ""
 months = ["Jan", "Feb", "Mar", "Apr", "May", "June" "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+days = ["Mon", "Tues", "Wedns", "Thurs", "Fri", "Sat", "Sun"]
 year = 0
 month = 0
 day = 0
 alarmHour = 0
 alarmMinute = -1
 alarmAmOrPm = -1
+
+#Set GPIO mode and initialize pins when on Pi
+if sys.platform == "linux" or sys.platform == "linux2":
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Monday, 0
+    GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Tuesday, 1
+    GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 2
+    GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Thursday, 3
+    GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Friday, 4
+    GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #SAturday, 5
+    GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 6
 
 #Function to convert from 12hr time to 24hr time
 def to24Hr(hour, amOrPm):
@@ -142,6 +181,9 @@ while (1==1):
     hour = -1
     minute = -1
     amOrPm = -1
+    year = -1
+    month = -1
+    day = -1
 
     while hour < 1 or hour > 12:
         lcd.clear()
@@ -236,7 +278,6 @@ while (1==1):
 
 #Set Linux time and date
 if sys.platform == "linux" or sys.platform == "linux2": #Linux
-    global time_tuple
     time_tuple = ( year, # Year
                   month, # Month
                     day, # Day
@@ -249,7 +290,7 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
 
 #Set time if on Pi...
 if sys.platform == "linux" or sys.platform == "linux2":
-    os.system("python set_time.py")
+    set_time._linux_set_time(time_tuple)
 
 
 
@@ -301,13 +342,18 @@ while 1==1:
     now = datetime.datetime.now()
     #If actual time and alarm time match, trigger alarm
     if alarmHour == now.hour and alarmMinute == now.minute:
-        #Play audio
-        '''
-        pygame.mixer.init()
-        pygame.mixer.music.load("alarm.wav")
-        pygame.mixer.music.play()
-        '''
-        pass
+        #Play audio using aplay
+        os.system("aplay /home/Pillbox/alarm.ogg")
+
+    	#Listen for GPIO pins fall (so listen for switches being let up) if on Pi
+        if sys.platform == "linux" or sys.platform == "linux2":
+        	GPIO.add_event_detect(36, GPIO.FALLING, callback=mondaySwitchPressed, bouncetime=300) #Monday
+        	GPIO.add_event_detect(38, GPIO.FALLING, callback=tuesdaySwitchPressed, bouncetime=300) #Tuesday
+        	GPIO.add_event_detect(40, GPIO.FALLING, callback=wednsdaySwitchPressed, bouncetime=300) #Wednsday
+        	GPIO.add_event_detect(31, GPIO.FALLING, callback=thursdaySwitchPressed, bouncetime=300) #Thursday
+        	GPIO.add_event_detect(33, GPIO.FALLING, callback=fridaySwitchPressed, bouncetime=300) #Friday
+        	GPIO.add_event_detect(35, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Saturday
+        	GPIO.add_event_detect(37, GPIO.FALLING, callback=GPIO_callback, bouncetime=300) #Sunday
 
     while alarmHour == now.hour and alarmMinute == now.minute:
         #Print alarm and flash display
@@ -320,18 +366,17 @@ while 1==1:
         lcd.clear()
 
     #Just print that we're still waiting for the alarm time...
-    else:
-        lcd.clear()
-        piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
-        + months[now.month - 1] + " " + now.day + ", " + now.year)
-        print("Waiting for alarm...")
-        time.sleep(3)
+    lcd.clear()
+    piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
+    + days[datetime.datetime.today().weekday()] + ", " + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
+    print("Waiting for alarm...")
+    time.sleep(3)
 
-        '''if sys.platform == "win32": #Clear screen on Windows
-            os.system("cls")
-        else:
-            os.system("clear") #Clear screen elsewhere
-        lcd.clear()'''
+    '''if sys.platform == "win32": #Clear screen on Windows
+        os.system("cls")
+    else:
+        os.system("clear") #Clear screen elsewhere
+    lcd.clear()'''
 
 
 ''' REGULAR BACKGROUND PROCESSES
