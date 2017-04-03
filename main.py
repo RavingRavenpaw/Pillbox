@@ -18,6 +18,7 @@ If you're actually trying to modify this on a linux machine, sorry about that!
 #Display loading message
 print("Loading...")
 
+import os
 import sys
 if sys.platform == "win32": #Windows
     #Just do nothing when LCD functions are called
@@ -180,6 +181,9 @@ while (1==1):
     hour = -1
     minute = -1
     amOrPm = -1
+    year = -1
+    month = -1
+    day = -1
 
     while hour < 1 or hour > 12:
         lcd.clear()
@@ -365,7 +369,7 @@ while 1==1:
     else:
         lcd.clear()
         piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
-        + days[datetime.datetime.today().weekday()] + months[now.month - 1] + " " + now.day + ", " + now.year)
+        + days[datetime.datetime.today().weekday()] + ", " + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
         print("Waiting for alarm...")
         time.sleep(3)
 
