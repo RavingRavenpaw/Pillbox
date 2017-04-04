@@ -291,7 +291,7 @@ time_tuple = (     year, # Year
 
 #Set time if on Pi...
 if sys.platform == "linux" or sys.platform == "linux2":
-    os.system("sudo date -s \"" + day + " " + months[month - 1] + " " + year + " " + hour + ":" + minute + ":" + "00\"")
+    os.system("sudo date -s \"" + day + " " + months[month] + " " + year + " " + hour + ":" + minute + ":" + "00\"")
 
 
 
