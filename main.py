@@ -33,7 +33,6 @@ if sys.platform == "linux" or sys.platform == "linux2": #Linux
     import Adafruit_CharLCD as LCD
 import time
 import datetime
-import set_time
 
 
 def piPrint(text):
@@ -292,7 +291,7 @@ time_tuple = (     year, # Year
 
 #Set time if on Pi...
 if sys.platform == "linux" or sys.platform == "linux2":
-    set_time._linux_set_time(time_tuple)
+    os.system("sudo date -s \"" + day + " " + months[month - 1] + " " + year + " " + hour + ":" + minute + ":" + "00\"")
 
 
 
