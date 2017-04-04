@@ -12,7 +12,10 @@ such as RPi.GPIO), so that's why. I think I could clear up some of this with
 If you're actually trying to modify this on a linux machine, sorry about that!
 '''
 
-
+#Dependencies
+#Adafruit_CharLCD - python package on GitHub
+#aplay - linux program on some website
+#RPi.GPIO - python package, already installed on Pi
 
 
 #Display loading message
@@ -277,8 +280,7 @@ while (1==1):
 
 
 #Set Linux time and date
-if sys.platform == "linux" or sys.platform == "linux2": #Linux
-    time_tuple = ( year, # Year
+time_tuple = (     year, # Year
                   month, # Month
                     day, # Day
                    hour, # Hour
