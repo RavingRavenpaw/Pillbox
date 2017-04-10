@@ -57,10 +57,10 @@ def switchFalling(channel):
 def switchRising(channel):
     switchTest(channel, "rising")
 
-switchWeekdays = {36 : "Monday", 38 ; "Tuesday", 40 : "Wednsday",
+switchWeekdays = {36 : "Monday", 38 : "Tuesday", 40 : "Wednsday",
 31 : "Thursday", 33 : "Friday", 35 : "Saturday", 37 : "Sunday"}
 
-switchWeekdaysInt = {36 : 0, 38 ; 1, 40 : 2,
+switchWeekdaysInt = {36 : 0, 38 : 1, 40 : 2,
 31 : 3, 33 : 4, 35 : 5, 37 : 6}
 
 def switchTest(channel, direction):
@@ -68,7 +68,7 @@ def switchTest(channel, direction):
     #
     #Check if the matching day of the week of the switch number we just pressed
     #corressponds with the weekday of the switch we SHOULD be pressing
-	if switchWeekdaysInt[channel] == datetime.datetime.today().weekday():
+    if switchWeekdaysInt[channel] == datetime.datetime.today().weekday():
         alarmTriggered = False
 
     else:
@@ -114,6 +114,7 @@ amOrPm = 0
 amPmVar = ""
 months = ["Jan", "Feb", "Mar", "Apr", "May", "June" "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
 days = ["Mon", "Tues", "Wedns", "Thurs", "Fri", "Sat", "Sun"]
+daysLong = ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"]
 year = 0
 month = 0
 day = 0
@@ -334,6 +335,7 @@ while correct == 0:
         #Confirm date and time are correct
         lcd.clear()
         piPrint("" + str(to12HrDisplay(alarmHour, alarmMinute)))
+        time.sleep(2)
         lcd.clear()
         piPrint("Is that correct?\n(0 no, 1 yes) ")
         correct = int(input())
@@ -343,6 +345,7 @@ while correct == 0:
             continue
 
 #Alarm time checker loop
+alarmTriggered = False
 while 1==1:
     now = datetime.datetime.now()
     #If actual time and alarm time match, trigger alarm
@@ -352,33 +355,33 @@ while 1==1:
 
     	#Listen for GPIO pins change if on Pi
         if sys.platform == "linux" or sys.platform == "linux2":
-        	GPIO.add_event_detect(36, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Monday
+            GPIO.add_event_detect(36, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Monday
             GPIO.add_event_detect(36, GPIO.RISING, callback=switchRising, bouncetime=300)
 
-        	GPIO.add_event_detect(38, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Tuesday
+            GPIO.add_event_detect(38, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Tuesday
             GPIO.add_event_detect(38, GPIO.RISING, callback=switchRising, bouncetime=300) #Tuesday
 
-        	GPIO.add_event_detect(40, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Wednsday
+            GPIO.add_event_detect(40, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Wednsday
             GPIO.add_event_detect(40, GPIO.RISING, callback=switchRising, bouncetime=300) #Wednsday
 
-        	GPIO.add_event_detect(31, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Thursday
+            GPIO.add_event_detect(31, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Thursday
             GPIO.add_event_detect(31, GPIO.RISING, callback=switchRising, bouncetime=300) #Thursday
 
-        	GPIO.add_event_detect(33, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Friday
+            GPIO.add_event_detect(33, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Friday
             GPIO.add_event_detect(33, GPIO.RISING, callback=switchRising, bouncetime=300) #Friday
 
-        	GPIO.add_event_detect(35, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Saturday
+            GPIO.add_event_detect(35, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Saturday
             GPIO.add_event_detect(35, GPIO.RISING, callback=switchRising, bouncetime=300) #Saturday
 
-        	GPIO.add_event_detect(37, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Sunday
+            GPIO.add_event_detect(37, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Sunday
             GPIO.add_event_detect(37, GPIO.RISING, callback=switchRising, bouncetime=300) #Sunday
 
-	alarmTriggered = True
+        alarmTriggered = True
     while alarmTriggered == True:
         #Print alarm and flash display
         lcd.clear()
         piPrint("Time to take\n" +
-        days[datetime.datetime.today().weekday()] + " pills.")
+        daysLong[datetime.datetime.today().weekday()] + " pills.")
         lcd.set_backlight(0)
         time.sleep(1)
         lcd.set_backlight(1)
