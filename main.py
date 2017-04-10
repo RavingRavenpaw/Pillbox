@@ -51,109 +51,35 @@ def piPrint(text):
         print(text)
         lcd.message(text)
 
-def mondaySwitchPressed(channel): #BCM 36
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 0:
+def switchFalling(channel):
+    switchTest(channel, "falling")
+
+def switchRising(channel):
+    switchTest(channel, "rising")
+
+switchWeekdays = {36 : "Monday", 38 ; "Tuesday", 40 : "Wednsday",
+31 : "Thursday", 33 : "Friday", 35 : "Saturday", 37 : "Sunday"}
+
+switchWeekdaysInt = {36 : 0, 38 ; 1, 40 : 2,
+31 : 3, 33 : 4, 35 : 5, 37 : 6}
+
+def switchTest(channel, direction):
+    #Code for checking if right switch pressed/depressed
+    #
+    #Check if the matching day of the week of the switch number we just pressed
+    #corressponds with the weekday of the switch we SHOULD be pressing
+	if switchWeekdaysInt[channel] == datetime.datetime.today().weekday():
         alarmTriggered = False
 
     else:
+        dayOfWeek = months[datetime.datetime.today().weekday()]
         lcd.clear()
         piPrint("Wrong pillbox!")
         #os.system("aplay command_to_stop_audio")
         #os.system("aplay some_error_sound")
         time.sleep(2)
         lcd.clear()
-        piPrint("Put box back\nin Monday slot!")
-        time.sleep(3)
-
-def tuesdaySwitchPressed(channel): #BCM 38
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 1:
-        alarmTriggered = False
-
-    else:
-        lcd.clear()
-        piPrint("Wrong pillbox!")
-        #os.system("aplay command_to_stop_audio")
-        #os.system("aplay some_error_sound")
-        time.sleep(2)
-        lcd.clear()
-        piPrint("Put box back\nin Tuesday slot!")
-        time.sleep(3)
-
-def wednsdaySwitchPressed(channel): #BCM 40
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 2:
-        alarmTriggered = False
-
-    else:
-        lcd.clear()
-        piPrint("Wrong pillbox!")
-        #os.system("aplay command_to_stop_audio")
-        #os.system("aplay some_error_sound")
-        time.sleep(2)
-        lcd.clear()
-        piPrint("Put box back\nin Wednsday slot!")
-        time.sleep(3)
-
-def thursdaySwitchPressed(channel): #BCM 31
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 3:
-        alarmTriggered = False
-
-    else:
-        lcd.clear()
-        piPrint("Wrong pillbox!")
-        #os.system("aplay command_to_stop_audio")
-        #os.system("aplay some_error_sound")
-        time.sleep(2)
-        lcd.clear()
-        piPrint("Put box back\nin Thursday slot!")
-        time.sleep(3)
-
-def fridaySwitchPressed(channel): #BCM 33
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 4:
-        alarmTriggered = False
-
-    else:
-        lcd.clear()
-        piPrint("Wrong pillbox!")
-        #os.system("aplay command_to_stop_audio")
-        #os.system("aplay some_error_sound")
-        time.sleep(2)
-        lcd.clear()
-        piPrint("Put box back\nin Friday slot!")
-        time.sleep(3)
-
-def saturdaySwitchPressed(channel): #BCM 35
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 5:
-        alarmTriggered = False
-
-    else:
-        lcd.clear()
-        piPrint("Wrong pillbox!")
-        #os.system("aplay command_to_stop_audio")
-        #os.system("aplay some_error_sound")
-        time.sleep(2)
-        lcd.clear()
-        piPrint("Put box back\nin Saturday slot!")
-        time.sleep(3)
-
-def sundaySwitchPressed(channel): #BCM 37
-	#Code for checking if right switch pressed/depressed
-	if datetime.datetime.today().weekday() == 6:
-        alarmTriggered = False
-
-    else:
-        lcd.clear()
-        piPrint("Wrong pillbox!")
-        #os.system("aplay command_to_stop_audio")
-        #os.system("aplay some_error_sound")
-        time.sleep(2)
-        lcd.clear()
-        piPrint("Put box back\nin Sunday slot!")
+        piPrint("Put box back\nin " + switchWeekdays[channel] + " slot!")
         time.sleep(3)
 
 
@@ -203,7 +129,7 @@ if sys.platform == "linux" or sys.platform == "linux2":
     GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 2
     GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Thursday, 3
     GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Friday, 4
-    GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #SAturday, 5
+    GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Saturday, 5
     GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Wednsday, 6
 
 #Function to convert from 12hr time to 24hr time
@@ -424,22 +350,35 @@ while 1==1:
         #Play audio using aplay
         os.system("aplay /home/Pillbox/alarm.ogg")
 
-    	#Listen for GPIO pins fall (so listen for switches being let up) if on Pi
+    	#Listen for GPIO pins change if on Pi
         if sys.platform == "linux" or sys.platform == "linux2":
-        	GPIO.add_event_detect(36, GPIO.FALLING, callback=mondaySwitchPressed, bouncetime=300) #Monday
-        	GPIO.add_event_detect(38, GPIO.FALLING, callback=tuesdaySwitchPressed, bouncetime=300) #Tuesday
-        	GPIO.add_event_detect(40, GPIO.FALLING, callback=wednsdaySwitchPressed, bouncetime=300) #Wednsday
-        	GPIO.add_event_detect(31, GPIO.FALLING, callback=thursdaySwitchPressed, bouncetime=300) #Thursday
-        	GPIO.add_event_detect(33, GPIO.FALLING, callback=fridaySwitchPressed, bouncetime=300) #Friday
-        	GPIO.add_event_detect(35, GPIO.FALLING, callback=saturdaySwitchPressed, bouncetime=300) #Saturday
-        	GPIO.add_event_detect(37, GPIO.FALLING, callback=sundaySwitchPressed, bouncetime=300) #Sunday
-	
+        	GPIO.add_event_detect(36, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Monday
+            GPIO.add_event_detect(36, GPIO.RISING, callback=switchRising, bouncetime=300)
+
+        	GPIO.add_event_detect(38, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Tuesday
+            GPIO.add_event_detect(38, GPIO.RISING, callback=switchRising, bouncetime=300) #Tuesday
+
+        	GPIO.add_event_detect(40, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Wednsday
+            GPIO.add_event_detect(40, GPIO.RISING, callback=switchRising, bouncetime=300) #Wednsday
+
+        	GPIO.add_event_detect(31, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Thursday
+            GPIO.add_event_detect(31, GPIO.RISING, callback=switchRising, bouncetime=300) #Thursday
+
+        	GPIO.add_event_detect(33, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Friday
+            GPIO.add_event_detect(33, GPIO.RISING, callback=switchRising, bouncetime=300) #Friday
+
+        	GPIO.add_event_detect(35, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Saturday
+            GPIO.add_event_detect(35, GPIO.RISING, callback=switchRising, bouncetime=300) #Saturday
+
+        	GPIO.add_event_detect(37, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Sunday
+            GPIO.add_event_detect(37, GPIO.RISING, callback=switchRising, bouncetime=300) #Sunday
+
 	alarmTriggered = True
-    while alarmTriggered == True
+    while alarmTriggered == True:
         #Print alarm and flash display
         lcd.clear()
-        piPrint("Time to take\n" + 
-        days[datetime.datetime.today().weekday()] + " pills.")!")
+        piPrint("Time to take\n" +
+        days[datetime.datetime.today().weekday()] + " pills.")
         lcd.set_backlight(0)
         time.sleep(1)
         lcd.set_backlight(1)
