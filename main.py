@@ -351,7 +351,7 @@ while 1==1:
     #If actual time and alarm time match, trigger alarm
     if alarmHour == now.hour and alarmMinute == now.minute:
         #Play audio using aplay
-        os.system("aplay /home/Pillbox/alarm.ogg")
+        os.system("aplay /home/pi/Pillbox/alarm.wav")
 
     	#Listen for GPIO pins change if on Pi
         if sys.platform == "linux" or sys.platform == "linux2":
