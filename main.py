@@ -51,23 +51,18 @@ def piPrint(text):
         print(text)
         lcd.message(text)
 
-def switchFalling(channel):
-    switchTest(channel, "falling")
-
-def switchRising(channel):
-    switchTest(channel, "rising")
-
 switchWeekdays = {36 : "Monday", 38 : "Tuesday", 40 : "Wednsday",
 31 : "Thursday", 33 : "Friday", 35 : "Saturday", 37 : "Sunday"}
 
 switchWeekdaysInt = {36 : 0, 38 : 1, 40 : 2,
 31 : 3, 33 : 4, 35 : 5, 37 : 6}
 
-def switchTest(channel, direction):
+def switchPress(channel):
     #Code for checking if right switch pressed/depressed
     #
     #Check if the matching day of the week of the switch number we just pressed
     #corressponds with the weekday of the switch we SHOULD be pressing
+    print("Pin: " + str(channel) + " voltage changed to " + str(GPIO.input(channel)))
     if switchWeekdaysInt[channel] == datetime.datetime.today().weekday():
         alarmTriggered = False
 
@@ -168,7 +163,7 @@ def to12HrDisplay(hour24, minute):
 
     #If after midnight and before noon
     if hour24 > 0 and hour24 < 12:
-    	return("" + str(hour24) + ":" + minute + " AM")
+    	return("" + str(hour24) + ":" + str(minute) + " AM")
 
     #If noon
     if hour24 == 12:
@@ -275,7 +270,9 @@ while (1==1):
     piPrint("Is that correct?\n(0 no, 1 yes) ")
     correct = int(input())
     if correct == 1:
-        #If that's okay, exit the look and continue on....
+        #If that's okay, exit the loop and continue on....
+        lcd.clear()
+        piPrint("Setting time,\njust a moment...")
         break
     else:
         #If that's not okay, keep looping until the user sets
@@ -296,7 +293,7 @@ time_tuple = (     year, # Year
 
 #Set time if on Pi...
 if sys.platform == "linux" or sys.platform == "linux2":
-    os.system("sudo date -s \"" + day + " " + months[month] + " " + year + " " + hour + ":" + minute + ":" + "00\"")
+    os.system("sudo date -s \"" + str(day) + " " + months[month] + " " + str(year) + " " + str(hour) + ":" + str(minute) + ":" + "00\"")
 
 
 
@@ -355,26 +352,13 @@ while 1==1:
 
     	#Listen for GPIO pins change if on Pi
         if sys.platform == "linux" or sys.platform == "linux2":
-            GPIO.add_event_detect(36, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Monday
-            GPIO.add_event_detect(36, GPIO.RISING, callback=switchRising, bouncetime=300)
-
-            GPIO.add_event_detect(38, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Tuesday
-            GPIO.add_event_detect(38, GPIO.RISING, callback=switchRising, bouncetime=300) #Tuesday
-
-            GPIO.add_event_detect(40, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Wednsday
-            GPIO.add_event_detect(40, GPIO.RISING, callback=switchRising, bouncetime=300) #Wednsday
-
-            GPIO.add_event_detect(31, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Thursday
-            GPIO.add_event_detect(31, GPIO.RISING, callback=switchRising, bouncetime=300) #Thursday
-
-            GPIO.add_event_detect(33, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Friday
-            GPIO.add_event_detect(33, GPIO.RISING, callback=switchRising, bouncetime=300) #Friday
-
-            GPIO.add_event_detect(35, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Saturday
-            GPIO.add_event_detect(35, GPIO.RISING, callback=switchRising, bouncetime=300) #Saturday
-
-            GPIO.add_event_detect(37, GPIO.FALLING, callback=switchFalling, bouncetime=300) #Sunday
-            GPIO.add_event_detect(37, GPIO.RISING, callback=switchRising, bouncetime=300) #Sunday
+            GPIO.add_event_detect(36, GPIO.BOTH, callback=switchPress, bouncetime=300) #Monday
+            GPIO.add_event_detect(38, GPIO.BOTH, callback=switchPress, bouncetime=300) #Tuesday
+            GPIO.add_event_detect(40, GPIO.BOTH, callback=switchPress, bouncetime=300) #Wednsday
+            GPIO.add_event_detect(31, GPIO.BOTH, callback=switchPress, bouncetime=300) #Thursday
+            GPIO.add_event_detect(33, GPIO.BOTH, callback=switchPress, bouncetime=300) #Friday
+            GPIO.add_event_detect(35, GPIO.BOTH, callback=switchPress, bouncetime=300) #Saturday
+            GPIO.add_event_detect(37, GPIO.BOTH, callback=switchPress, bouncetime=300) #Sunday
 
         alarmTriggered = True
     while alarmTriggered == True:
@@ -390,8 +374,8 @@ while 1==1:
 
     #Just print that we're still waiting for the alarm time...
     lcd.clear()
-    piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
-    + days[datetime.datetime.today().weekday()] + ", " + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
+    piPrint("" + to12HrDisplay(now.hour, now.minute) + " " + days[datetime.datetime.today().weekday()] + ",\n"
+    + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
     print("Waiting for alarm...")
     time.sleep(3)
 
