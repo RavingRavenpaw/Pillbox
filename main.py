@@ -163,7 +163,7 @@ def to12HrDisplay(hour24, minute):
 
     #If after midnight and before noon
     if hour24 > 0 and hour24 < 12:
-    	return("" + str(hour24) + ":" + minute + " AM")
+    	return("" + str(hour24) + ":" + str(minute) + " AM")
 
     #If noon
     if hour24 == 12:
@@ -374,8 +374,8 @@ while 1==1:
 
     #Just print that we're still waiting for the alarm time...
     lcd.clear()
-    piPrint("" + to12HrDisplay(now.hour, now.minute) + days[datetime.datetime.today().weekday()] + "\n"
-    + ", " + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
+    piPrint("" + to12HrDisplay(now.hour, now.minute) + " " + days[datetime.datetime.today().weekday()] + ",\n"
+    + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
     print("Waiting for alarm...")
     time.sleep(3)
 
