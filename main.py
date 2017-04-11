@@ -390,8 +390,8 @@ while 1==1:
 
     #Just print that we're still waiting for the alarm time...
     lcd.clear()
-    piPrint("" + to12HrDisplay(now.hour, now.minute) + "\n"
-    + days[datetime.datetime.today().weekday()] + ", " + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
+    piPrint("" + to12HrDisplay(now.hour, now.minute) + days[datetime.datetime.today().weekday()] + "\n"
+    + ", " + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
     print("Waiting for alarm...")
     time.sleep(3)
 
