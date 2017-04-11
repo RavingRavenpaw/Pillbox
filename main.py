@@ -361,8 +361,10 @@ while 1==1:
             GPIO.add_event_detect(37, GPIO.BOTH, callback=switchPress, bouncetime=300) #Sunday
 
         alarmTriggered = True
+        timesDone = 0
     while alarmTriggered == True:
         #Print alarm and flash display
+        timesDone += 1
         lcd.clear()
         piPrint("Time to take\n" +
         daysLong[datetime.datetime.today().weekday()] + " pills.")
@@ -371,6 +373,8 @@ while 1==1:
         lcd.set_backlight(1)
         time.sleep(2)
         lcd.clear()
+        if timesDone > 30:
+            alarmTriggered = False
 
     #Just print that we're still waiting for the alarm time...
     lcd.clear()
@@ -378,36 +382,3 @@ while 1==1:
     + months[now.month - 1] + " " + str(now.day) + ", " + str(now.year))
     print("Waiting for alarm...")
     time.sleep(3)
-
-    '''if sys.platform == "win32": #Clear screen on Windows
-        os.system("cls")
-    else:
-        os.system("clear") #Clear screen elsewhere
-    lcd.clear()'''
-
-
-''' REGULAR BACKGROUND PROCESSES
-VIA THREADING, MULTIPROCESSING, OR RUNNING MULTIPLE PYTHON FILES
-
-
-check time every five minutes or so
-if not alarm time
-    do nothing, go back to background process
-
-if it is alarm time
-    while corresponding pillbox switch is pressed down/until it is depressed
-        1. Display message to take pills on LCD and flash LCD
-        2. Flash an LED
-        3. Play music
-
-	if wrong pillbox switch depressed
-		1. Change music to a warning tone
-		2. Flash LCD and display message that wrong pillbox was removed
-		3. Wait until switch pressed back in
-
-    When corresponding pillbox switch is depressed and user removes box
-        1. Change LCD back to normal
-        2. Turn off LED
-        3. Stop music
-Go back to background process
-'''
